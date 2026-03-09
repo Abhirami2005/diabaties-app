@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Diabetes Risk Checker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0f172a;
+
+      /* Colorful gradient background */
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.35) 0, transparent 55%),
+        radial-gradient(circle at bottom right, rgba(16,185,129,0.35) 0, transparent 55%),
+        linear-gradient(135deg, #eff6ff 0, #ecfeff 40%, #fef9c3 100%);
+      background-attachment: fixed;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 960px;
+      padding: 20px;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 28px;
+      align-items: center;
+    }
+
+    @media (max-width: 820px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left: illustration & branding */
+    .hero {
+      position: relative;
+      padding: 24px 20px;
+      border-radius: 24px;
+      background: linear-gradient(145deg, #2563eb, #22c55e);
+      color: #e5f2ff;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(15,23,42,0.45);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 0 0, rgba(255,255,255,0.22) 0, transparent 45%),
+        radial-gradient(circle at 100% 100%, rgba(255,255,255,0.1) 0, transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.4);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.4);
+    }
+
+    .hero-title {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 13px;
+      color: #e5e7eb;
+      max-width: 280px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .stat-pill {
+      padding: 7px 10px;
+      border-radius: 16px;
+      background: rgba(15,23,42,0.42);
+      font-size: 11px;
+    }
+
+    .hero-image-wrap {
+      margin-top: 8px;
+      border-radius: 18px;
+      background: rgba(15,23,42,0.55);
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-image {
+      width: 100%;
+      max-width: 260px;
+      border-radius: 14px;
+      object-fit: cover;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.35);
+    }
+
+    /* Diabetes-related illustration */
+    .hero-image {
+      content: url("https://pplx-res.cloudinary.com/image/upload/pplx_search_images/9d489e39fd73c784ff2843ad2a8e2fe284c2f997.jpg");
+    }
+
+    /* Right: form card */
+    .card {
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(16px);
+      border-radius: 22px;
+      padding: 22px 20px;
+      box-shadow: 0 14px 40px rgba(148,163,184,0.4);
+      border: 1px solid rgba(148,163,184,0.4);
+    }
+
+    .card-header {
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .card-caption {
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .accuracy-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(34,197,94,0.1);
+      color: #166534;
+      font-size: 11px;
+      font-weight: 500;
+      margin-top: 10px;
+    }
+
+    .accuracy-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    form {
+      margin-top: 12px;
+    }
+
+    .field-group {
+      text-align: left;
+      margin-bottom: 12px;
+    }
+
+    .field-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 12px;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+
+    .field-label span {
+      font-weight: 500;
+    }
+
+    .field-hint {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 9px 11px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      font-size: 13px;
+      background-color: #f9fafb;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, transform 0.05s ease;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px rgba(37,99,235,0.25);
+      background-color: #ffffff;
+      transform: translateY(-0.5px);
+    }
+
+    .btn-primary {
+      margin-top: 6px;
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: none;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      background: linear-gradient(135deg, #2563eb, #ec4899);
+      color: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 12px 26px rgba(37,99,235,0.45);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.06);
+      box-shadow: 0 16px 34px rgba(37,99,235,0.55);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+      box-shadow: 0 10px 22px rgba(30,64,175,0.45);
+    }
+
+    .disclaimer {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 12px;
+      line-height: 1.5;
+      text-align: left;
+    }
+
+    .disclaimer b {
+      font-weight: 600;
+      color: #4b5563;
+    }
+
+    @media (max-width: 600px) {
+      .page {
+        padding: 14px;
+      }
+      .hero {
+        padding: 18px 16px;
+      }
+      .card {
+        padding: 18px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="shell">
+      <!-- Left colorful hero with image -->
+      <div class="hero">
+        <div class="hero-inner">
+          <div class="badge">
+            <span class="badge-dot"></span>
+            Smart Health AI
+          </div>
+          <div>
+            <div class="hero-title">Track your diabetes risk in seconds.</div>
+            <p class="hero-subtitle">
+              Enter a few key health metrics and get an instant AI‑powered risk estimation for diabetes.
+            </p>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-pill">Clinical‑style UI</div>
+            <div class="stat-pill">Secure form</div>
+            <div class="stat-pill">Fast results</div>
+          </div>
+          <div class="hero-image-wrap">
+            <img class="hero-image" alt="Diabetes health illustration" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Right form card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Diabetes Risk Checker</div>
+          <div class="card-caption">
+            Use recent Glucose, Blood Pressure, BMI and Age values for better estimation.
+          </div>
+          <div class="accuracy-pill">
+            <div class="accuracy-dot"></div>
+            Model accuracy: {{ accuracy }}
+          </div>
+        </div>
+
+        <form action="/predict" method="POST">
+          <div class="field-group">
+            <label class="field-label">
+              <span>Glucose level (mg/dL)</span>
+              <span class="field-hint">e.g., 120</span>
+            </label>
+            <input type="number" step="any" name="Glucose" required />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">
+              <span>Blood pressure (mm Hg)</span>
+              <span class="field-hint">e.g., 80</span>
+            </label>
+            <input type="number" step="any" name="BloodPressure" required />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">
+              <span>BMI</span>
+              <span class="field-hint">e.g., 26.5</span>
+            </label>
+            <input type="number" step="any" name="BMI" required />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">
+              <span>Age (years)</span>
+              <span class="field-hint">e.g., 35</span>
+            </label>
+            <input type="number" step="any" name="Age" required />
+          </div>
+
+          <button type="submit" class="btn-primary">Check my risk</button>
+        </form>
+
+        <p class="disclaimer">
+          <b>Note:</b> This tool provides an estimated risk based on patterns in data and is not a medical diagnosis.
+          Always consult a licensed healthcare professional for medical advice or treatment decisions.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
