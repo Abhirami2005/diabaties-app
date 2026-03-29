@@ -40,3 +40,11 @@ This is a Machine Learning web application built using Flask that predicts wheth
 ## 👩‍💻 Author
 
 Abhirami
+
+# Diabaties App
+
+This is my Diabetes Prediction App built with Flask.
+
+## Live Demo
+[Click here to open live demo]
+https://diabaties-app.onrender.com
